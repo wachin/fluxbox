@@ -2,6 +2,14 @@
 
 Date: 2026-07-14
 
+## Repository state
+
+This repository now contains a `debian/` directory that was added manually from the MX Linux source package metadata archive:
+
+- https://mxrepo.com/mx/repo/pool/main/f/fluxbox/fluxbox_1.3.7+git20220731-0mx23+1.debian.tar.xz
+
+That means this tree is no longer just a plain upstream/autotools source snapshot. It is now an upstream Fluxbox source tree plus Debian/MX packaging files imported from the MX Linux package source.
+
 ## Problem this patch tries to address
 
 Under Fluxbox on X11, some Qt/KDE applications such as:
@@ -170,30 +178,39 @@ After installing, log out and start a Fluxbox session again before testing `Kate
 
 ## About creating a `.deb`
 
-This source tree does **not** contain a `debian/` directory, so by itself it is **not** a complete Debian source package.
+This repository **now does contain** a `debian/` directory.
 
-That means:
+That `debian/` directory was added from the MX Linux packaging archive at:
 
-- you can compile it directly from source,
-- but you cannot produce a proper Debian package from this tree alone with `dpkg-buildpackage` unless Debian packaging metadata is added.
+- https://mxrepo.com/mx/repo/pool/main/f/fluxbox/fluxbox_1.3.7+git20220731-0mx23+1.debian.tar.xz
 
-## Recommended way to build a `.deb`
+So, unlike a plain upstream snapshot, this tree may now be usable for Debian package building, provided that:
 
-Use this patch inside a Fluxbox source tree that already contains `debian/` packaging files.
+- the imported `debian/` files match this exact source tree closely enough,
+- the build dependencies are installed,
+- and the package rules still work correctly on the current system.
 
-Typical workflow:
+## Recommended way to build a `.deb` from this repository
 
-1. Obtain the Debian/MX source package for Fluxbox.
-2. Copy the same `src/Window.cc` patch into that packaged source tree.
-3. Build the package there.
+Suggested workflow:
 
-Example command once you are inside a source tree that already has `debian/`:
+1. Keep the patch in `src/Window.cc` as it is now, or move it later into `debian/patches/` if you want formal Debian patch management.
+2. Run `./autogen.sh` if needed.
+3. Build the package directly from this repository with `dpkg-buildpackage`.
+
+Example command:
 
 ```bash
 dpkg-buildpackage -b -us -uc
 ```
 
-That should generate one or more `.deb` files in the parent directory.
+That should generate one or more `.deb` files in the parent directory if the packaging metadata is compatible with this tree.
+
+If packaging fails, the next things to check are:
+
+- whether the imported `debian/` directory expects a slightly different upstream tree,
+- whether any MX/Debian patches need adjustment,
+- and whether the current source version still matches the imported package metadata closely enough.
 
 ## Install the generated `.deb`
 
