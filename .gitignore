@@ -51,3 +51,14 @@ Makefile.in
 
 # off source build directory
 build
+
+
+# Additional autotools/libtool artifacts
+config.cache
+libtool
+.libs
+*.la
+*.lo
+*.Plo
+*.Tpo
+compile_commands.json
