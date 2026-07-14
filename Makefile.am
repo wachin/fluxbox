@@ -82,7 +82,13 @@ include util/Makemodule.am
 include util/fbrun/Makemodule.am
 
 uninstall-hook:
-	rmdir $(DESTDIR)$(pkgdatadir)
+	rm -f $(DESTDIR)$(DEFAULT_MENU)
+	rm -f $(DESTDIR)$(DEFAULT_KEYS)
+	rm -f $(DESTDIR)$(DEFAULT_APPS)
+	rm -f $(DESTDIR)$(DEFAULT_OVERLAY)
+	rm -f $(DESTDIR)$(DEFAULT_INITFILE)
+	rm -f $(DESTDIR)$(DEFAULT_WINDOWMENU)
+	-find $(DESTDIR)$(pkgdatadir) -depth -type d -empty -exec rmdir {} \;
 
 source-doc:
 	doxygen Doxyfile
