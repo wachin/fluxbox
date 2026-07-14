@@ -14,8 +14,8 @@ Este archivo resume lo que ya se hizo en este repositorio y lo que queda pendien
 [x] Se creó `README.md` en este repositorio documentando el parche y cómo probarlo.
 [x] Se añadió un directorio `debian/` tomado del paquete de MX Linux para facilitar trabajo posterior de empaquetado.
 [x] Se confirmó que `autogen.sh` funciona en este árbol y genera `configure` correctamente.
-[ ] Verificar con `./configure` si el árbol genera `Makefile` con objetivo `uninstall` listo para usar.
-[ ] Compilar el proyecto parcheado.
+[x] Se verificó con `./configure` que el árbol genera `Makefile` y que existe objetivo `uninstall`.
+[x] Se compiló el proyecto parcheado con `make -j4`.
 [ ] Probar el binario parcheado en una sesión real de Fluxbox.
 [ ] Construir un paquete `.deb` desde este repositorio con el `debian/` ya añadido.
 
@@ -38,10 +38,10 @@ Objetivo del parche:
 
 ## Trabajo inmediato recomendado
 
-[ ] Ejecutar `./configure` en este repositorio.
-[ ] Confirmar que se generan `Makefile` y reglas de `install`/`uninstall`.
-[ ] Ejecutar `make -j"$(nproc)"`.
-[ ] Si compila, probar primero con instalación local controlada.
+[x] Ejecutar `./configure` en este repositorio.
+[x] Confirmar que se generan `Makefile` y reglas de `install`/`uninstall`.
+[x] Ejecutar `make -j"$(nproc)"`.
+[ ] Probar primero con instalación local controlada.
 [ ] Si la prueba local mejora el problema, construir después un `.deb`.
 
 ## Pruebas funcionales pendientes
@@ -60,11 +60,27 @@ Objetivo del parche:
 [x] El repositorio ya tiene un directorio `debian/`.
 [x] Ese directorio `debian/` fue añadido manualmente desde el archivo de empaquetado MX Linux:
 [x] https://mxrepo.com/mx/repo/pool/main/f/fluxbox/fluxbox_1.3.7+git20220731-0mx23+1.debian.tar.xz
-[ ] Revisar que el `debian/` añadido sea coherente con este árbol fuente exacto.
+[x] Revisar que el `debian/` añadido sea coherente con este árbol fuente exacto a nivel básico:
+[x] `dpkg-buildpackage` alcanza `dpkg-source --before-build` y aplica correctamente `debian/patches/series`.
+[x] El árbol vuelve a quedar limpio con `dpkg-source --after-build .`.
 [ ] Revisar `debian/patches/series` para decidir si el parche nuevo debe añadirse allí como patch Debian formal.
 [ ] Decidir si conviene mantener el cambio directamente en `src/Window.cc` o moverlo a `debian/patches/`.
-[ ] Ejecutar `dpkg-buildpackage -b -us -uc` cuando el árbol esté listo.
+[ ] Ejecutar `dpkg-buildpackage -b -us -uc` con todas las build-deps instaladas.
+[ ] Resolver build-deps faltantes detectadas en esta máquina: `libgtk2.0-dev`, `libimlib2-dev`, `libxpm-dev`, `libxt-dev`.
 [ ] Instalar el `.deb` generado y probarlo en una sesión real.
+
+## Resultado de verificación en esta máquina
+
+[x] `./configure` terminó bien.
+[x] El objetivo `uninstall` existe (`make -n uninstall`).
+[x] `make -j4` terminó bien y generó el binario `./fluxbox`.
+[x] `dpkg-buildpackage -b -us -uc` arranca correctamente con el `debian/` importado.
+[ ] El build Debian no pudo continuar en esta máquina por dependencias faltantes.
+
+Notas observadas durante `./configure`:
+
+- El árbol compiló en esta máquina sin `imlib2` ni `xpm` porque `configure` no encontró esas librerías opcionales.
+- Para el paquete Debian/MX eso no basta todavía, porque `debian/control` sí exige `libimlib2-dev` y `libxpm-dev`, además de `libgtk2.0-dev` y `libxt-dev`.
 
 ## Mejoras técnicas futuras para Fluxbox en 2026
 
@@ -95,10 +111,10 @@ Estas no están hechas todavía. Son líneas de trabajo para una revisión más 
 ## Siguiente paso sugerido al abrir Codex directamente aquí
 
 [ ] Abrir Codex en `/home/wachin/Dev/fluxbox-dev/fluxbox`.
-[ ] Ejecutar `./configure`.
-[ ] Compilar.
+[x] Ejecutar `./configure`.
+[x] Compilar.
 [ ] Probar el parche en sesión Fluxbox real.
-[ ] Si funciona, empaquetar en `.deb`.
+[ ] Si funciona, instalar build-deps y empaquetar en `.deb`.
 [ ] Si no funciona, seguir trazando `MapRequest`, `MapNotify`, `focusRequestFromClient()` y `FocusControl`.
 
 ## Next safe step
@@ -108,3 +124,4 @@ Next safe step, if you want to continue, is:
   1. sudo make install
   2. log out and test Fluxbox
   3. if needed, sudo make uninstall from this same tree
+  4. before building `.deb`, install missing build-deps and rerun `dpkg-buildpackage -b -us -uc`

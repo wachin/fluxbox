@@ -142,7 +142,9 @@ Install the usual build requirements first on MX Linux / Debian:
 
 ```bash
 sudo apt update
-sudo apt install build-essential autoconf automake pkg-config   libx11-dev libxft-dev libxinerama-dev libxpm-dev libimlib2-dev   libfribidi-dev libfontconfig1-dev libxrandr-dev libxrender-dev
+sudo apt install build-essential autoconf automake pkg-config \
+    libx11-dev libxft-dev libxinerama-dev libxpm-dev libimlib2-dev \
+    libfribidi-dev libfontconfig1-dev libxrandr-dev libxrender-dev
 ```
 
 Depending on the exact branch and your system, you may already have some of them installed.
