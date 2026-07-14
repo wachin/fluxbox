@@ -32,8 +32,6 @@
 #include <algorithm>
 #include <vector>
 
-using namespace std::placeholders;
-
 namespace FbTk {
 
 typedef CompareEqual_base<FbWindow, Window> CompareWindow;
@@ -493,27 +491,27 @@ unsigned int Container::maxWidthPerClient() const {
     return 1;
 }
 
-void Container::for_each(std::function<void(Item)> function) {
+void Container::for_each(std::mem_fun_t<void, FbWindow> function) {
     std::for_each(begin(), end(), function);
 }
 
 void Container::setAlpha(int alpha) {
     FbWindow::setAlpha(alpha);
-    STLUtil::forAll(m_item_list, std::bind(std::mem_fn(&Button::setAlpha), _1, alpha));
+    STLUtil::forAll(m_item_list, std::bind2nd(std::mem_fun(&Button::setAlpha), alpha));
 }
 
 void Container::parentMoved() {
     FbWindow::parentMoved();
-    STLUtil::forAll(m_item_list, std::mem_fn(&Button::parentMoved));
+    STLUtil::forAll(m_item_list, std::mem_fun(&Button::parentMoved));
 }
 
 void Container::invalidateBackground() {
     FbWindow::invalidateBackground();
-    STLUtil::forAll(m_item_list, std::mem_fn(&Button::invalidateBackground));
+    STLUtil::forAll(m_item_list, std::mem_fun(&Button::invalidateBackground));
 }
 
 void Container::clear() {
-    STLUtil::forAll(m_item_list, std::mem_fn(&Button::clear));
+    STLUtil::forAll(m_item_list, std::mem_fun(&Button::clear));
 }
 
 void Container::setOrientation(Orientation orient) {
@@ -521,7 +519,7 @@ void Container::setOrientation(Orientation orient) {
         return;
 
     FbWindow::invalidateBackground();
-    STLUtil::forAll(m_item_list, std::bind(std::mem_fn(&Button::setOrientation),_1, orient));
+    STLUtil::forAll(m_item_list, std::bind2nd(std::mem_fun(&Button::setOrientation), orient));
 
     if (((m_orientation == ROT0 || m_orientation == ROT180) &&
         (orient == ROT90 || orient == ROT270)) ||

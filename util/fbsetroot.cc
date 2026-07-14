@@ -219,7 +219,7 @@ void fbsetroot::modula(int x, int y) {
     char data[32];
     long pattern = 0;
 
-    int i;
+    register int i;
 
     FbRootWindow root(screen);
 
