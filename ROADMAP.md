@@ -100,3 +100,11 @@ Estas no están hechas todavía. Son líneas de trabajo para una revisión más 
 [ ] Probar el parche en sesión Fluxbox real.
 [ ] Si funciona, empaquetar en `.deb`.
 [ ] Si no funciona, seguir trazando `MapRequest`, `MapNotify`, `focusRequestFromClient()` y `FocusControl`.
+
+## Next safe step
+
+Next safe step, if you want to continue, is:
+
+  1. sudo make install
+  2. log out and test Fluxbox
+  3. if needed, sudo make uninstall from this same tree
