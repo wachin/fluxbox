@@ -2086,7 +2086,7 @@ void FluxboxWindow::mapRequestEvent(XMapRequestEvent &re) {
     setCurrentClient(*client, false); // focus handled on MapNotify
     deiconify();
 
-    if (isFocusNew()) {
+    if (isFocusNew() || client->isTransient()) {
         m_focused = false; // deiconify sets this
         Focus::Protection fp = m_focus_protection;
         m_focus_protection &= ~Focus::Deny; // goes by "Refuse"
@@ -2139,7 +2139,7 @@ void FluxboxWindow::mapNotifyEvent(XMapEvent &ne) {
     // we use m_focused as a signal that this should be focused when mapped
     if (m_focused) {
         m_focused = false;
-        focus();
+        raiseAndFocus();
     }
 
 }
