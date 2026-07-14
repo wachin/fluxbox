@@ -58,6 +58,8 @@ Objetivo del parche:
 ## Empaquetado Debian / MX
 
 [x] El repositorio ya tiene un directorio `debian/`.
+[x] Ese directorio `debian/` fue añadido manualmente desde el archivo de empaquetado MX Linux:
+[x] https://mxrepo.com/mx/repo/pool/main/f/fluxbox/fluxbox_1.3.7+git20220731-0mx23+1.debian.tar.xz
 [ ] Revisar que el `debian/` añadido sea coherente con este árbol fuente exacto.
 [ ] Revisar `debian/patches/series` para decidir si el parche nuevo debe añadirse allí como patch Debian formal.
 [ ] Decidir si conviene mantener el cambio directamente en `src/Window.cc` o moverlo a `debian/patches/`.
