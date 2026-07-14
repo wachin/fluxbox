@@ -1,11 +1,13 @@
 # data/Makefile.am for Fluxbox - an X11 Window manager
 
 EXTRA_DIST += \
+	data/fluxbox.desktop.in \
 	data/keys \
 	data/overlay \
 	data/windowmenu
 
 PATHFILES += \
+	data/fluxbox.desktop \
 	data/apps \
 	data/init
 
@@ -29,6 +31,8 @@ include data/styles/arch/pixmaps/Makemodule.am
 include data/styles/arch/Makemodule.am
 
 pkgdata_FILES = data/init data/keys data/apps data/overlay data/menu
+xsessionsdir = $(datadir)/xsessions
+xsessions_DATA = data/fluxbox.desktop
 
 install-data-local: $(pkgdata_FILES)
 	@echo "Installing menu file in $(DESTDIR)$(DEFAULT_MENU)"
