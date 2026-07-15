@@ -1,94 +1,94 @@
 # ROADMAP
 
-Fecha: 2026-07-14
+Date: 2026-07-14
 
-Este archivo resume lo que ya se hizo en este repositorio y lo que queda pendiente para continuar el trabajo directamente desde aquí.
+This file summarizes what has already been done in this repository and what remains pending so work can continue directly from here.
 
-## Estado actual
+## Current Status
 
-[x] Se revisó el árbol upstream completo de Fluxbox.
-[x] Se identificó una posible causa raíz del problema con diálogos `File -> Open...` en aplicaciones Qt/KDE bajo Fluxbox en X11.
-[x] Se revisó el manejo de ventanas `transient` y `modal` en `src/Window.cc`, `src/FocusControl.cc` y `src/WinClient.cc`.
-[x] Se confirmó que el problema observado encaja con un diálogo modal que sí se crea, pero no siempre se eleva ni toma el foco correctamente.
-[x] Se aplicó un parche mínimo en `src/Window.cc`.
-[x] Se creó `README.md` en este repositorio documentando el parche y cómo probarlo.
-[x] Se añadió un directorio `debian/` tomado del paquete de MX Linux para facilitar trabajo posterior de empaquetado.
-[x] Se confirmó que `autogen.sh` funciona en este árbol y genera `configure` correctamente.
-[x] Se verificó con `./configure` que el árbol genera `Makefile` y que existe objetivo `uninstall`.
-[x] Se compiló el proyecto parcheado con `make -j4`.
-[x] Probar el binario parcheado en una sesión real de Fluxbox.
-[x] Construir un paquete `.deb` desde este repositorio con el `debian/` ya añadido.
+[x] Reviewed the full upstream Fluxbox source tree.
+[x] Identified a possible root cause for the `File -> Open...` dialog issue in Qt/KDE applications under Fluxbox on X11.
+[x] Reviewed `transient` and `modal` window handling in `src/Window.cc`, `src/FocusControl.cc`, and `src/WinClient.cc`.
+[x] Confirmed that the observed issue matches a modal dialog that is created, but is not always raised or focused correctly.
+[x] Applied a minimal patch in `src/Window.cc`.
+[x] Created `README.md` in this repository documenting the patch and how to test it.
+[x] Added a `debian/` directory taken from the MX Linux package to support later packaging work.
+[x] Confirmed that `autogen.sh` works in this tree and generates `configure` correctly.
+[x] Verified with `./configure` that the tree generates `Makefile` and has an `uninstall` target.
+[x] Built the patched project with `make -j4`.
+[x] Tested the patched binary in a real Fluxbox session.
+[x] Built a `.deb` package from this repository with the added `debian/` directory.
 
-## Parche aplicado
+## Applied Patch
 
-Archivo modificado:
+Modified file:
 
 - `src/Window.cc`
 
-Cambios hechos:
+Changes made:
 
-[x] En `mapRequestEvent()`, tratar también a las ventanas `transient` como candidatas al mismo flujo de foco usado para ventanas nuevas.
-[x] En `mapNotifyEvent()`, usar `raiseAndFocus()` en lugar de `focus()` cuando Fluxbox ya decidió que la ventana debe recibir foco.
+[x] In `mapRequestEvent()`, also treat `transient` windows as candidates for the same focus path used for new windows.
+[x] In `mapNotifyEvent()`, use `raiseAndFocus()` instead of `focus()` when Fluxbox has already decided that the window should receive focus.
 
-Objetivo del parche:
+Patch goal:
 
-- mejorar el comportamiento de diálogos modales/transitorios,
-- especialmente en `Kate`, `Kdenlive`, `Ksnip`, `Dolphin` y aplicaciones Qt/KDE similares,
-- evitando que el diálogo exista pero quede oculto, tapado o sin foco aparente.
+- improve behavior for modal/transient dialogs,
+- especially in `Kate`, `Kdenlive`, `Ksnip`, `Dolphin`, and similar Qt/KDE applications,
+- preventing the dialog from existing but remaining hidden, covered, or apparently unfocused.
 
-## Trabajo inmediato recomendado
+## Recommended Immediate Work
 
-[x] Ejecutar `./configure` en este repositorio.
-[x] Confirmar que se generan `Makefile` y reglas de `install`/`uninstall`.
-[x] Ejecutar `make -j"$(nproc)"`.
-[x] Construir el paquete `.deb` con `dpkg-buildpackage -b -us -uc`.
-[x] Instalar el `.deb` generado y probarlo en una sesión real de Fluxbox.
+[x] Run `./configure` in this repository.
+[x] Confirm that `Makefile` and `install`/`uninstall` rules are generated.
+[x] Run `make -j"$(nproc)"`.
+[x] Build the `.deb` package with `dpkg-buildpackage -b -us -uc`.
+[x] Install the generated `.deb` and test it in a real Fluxbox session.
 
-## Pruebas funcionales pendientes
+## Pending Functional Tests
 
-[x] Iniciar sesión en Fluxbox con el binario parcheado.
-[ ] Abrir `kate` y probar `File -> Open...`.
-[ ] Repetir con `kdenlive`.
-[ ] Repetir con `ksnip`.
-[ ] Repetir con `dolphin`.
-[ ] Comprobar si el diálogo aparece inmediatamente, visible y con foco.
-[ ] Verificar si sigue existiendo congelamiento aparente de más de varios segundos.
-[ ] Comparar el comportamiento con y sin reglas `[transient]` en `~/.fluxbox/apps`.
+[x] Log into Fluxbox with the patched binary.
+[ ] Open `kate` and test `File -> Open...`.
+[ ] Repeat with `kdenlive`.
+[ ] Repeat with `ksnip`.
+[ ] Repeat with `dolphin`.
+[ ] Confirm whether the dialog appears immediately, visible and focused.
+[ ] Check whether any apparent freeze lasting more than several seconds still occurs.
+[ ] Compare behavior with and without `[transient]` rules in `~/.fluxbox/apps`.
 
-## Empaquetado Debian / MX
+## Debian / MX Packaging
 
-[x] El repositorio ya tiene un directorio `debian/`.
-[x] Ese directorio `debian/` fue añadido manualmente desde el archivo de empaquetado MX Linux:
+[x] The repository already has a `debian/` directory.
+[x] That `debian/` directory was added manually from the MX Linux packaging archive:
 [x] https://mxrepo.com/mx/repo/pool/main/f/fluxbox/fluxbox_1.3.7+git20220731-0mx23+1.debian.tar.xz
-[x] Revisar que el `debian/` añadido sea coherente con este árbol fuente exacto a nivel básico:
-[x] `dpkg-buildpackage` alcanza `dpkg-source --before-build` y aplica correctamente `debian/patches/series`.
-[x] El árbol vuelve a quedar limpio con `dpkg-source --after-build .`.
-[ ] Revisar `debian/patches/series` para decidir si el parche nuevo debe añadirse allí como patch Debian formal.
-[ ] Decidir si conviene mantener el cambio directamente en `src/Window.cc` o moverlo a `debian/patches/`.
-[x] Ejecutar `dpkg-buildpackage -b -us -uc` con todas las build-deps instaladas.
-[x] Resolver build-deps faltantes detectadas en esta máquina.
-[x] Verificar con `dpkg-checkbuilddeps` que ya no faltan dependencias de construcción.
-[x] Generar `../fluxbox_1.3.7+git20220731-0mx23+1_amd64.deb`.
-[x] Generar `../fluxbox-dbgsym_1.3.7+git20220731-0mx23+1_amd64.deb`.
-[x] Instalar el `.deb` generado y probarlo en una sesión real.
+[x] Check that the added `debian/` directory is basically coherent with this exact source tree:
+[x] `dpkg-buildpackage` reaches `dpkg-source --before-build` and correctly applies `debian/patches/series`.
+[x] The tree returns to a clean state with `dpkg-source --after-build .`.
+[ ] Review `debian/patches/series` to decide whether the new patch should be added there as a formal Debian patch.
+[ ] Decide whether to keep the change directly in `src/Window.cc` or move it to `debian/patches/`.
+[x] Run `dpkg-buildpackage -b -us -uc` with all build dependencies installed.
+[x] Resolve missing build dependencies detected on this machine.
+[x] Verify with `dpkg-checkbuilddeps` that no build dependencies are missing.
+[x] Generate `../fluxbox_1.3.7+git20220731-0mx23+1_amd64.deb`.
+[x] Generate `../fluxbox-dbgsym_1.3.7+git20220731-0mx23+1_amd64.deb`.
+[x] Install the generated `.deb` and test it in a real session.
 
-## Resultado de verificación en esta máquina
+## Verification Result On This Machine
 
-[x] `./configure` terminó bien.
-[x] El objetivo `uninstall` existe (`make -n uninstall`).
-[x] `make -j4` terminó bien y generó el binario `./fluxbox`.
-[x] `dpkg-buildpackage -b -us -uc` arranca correctamente con el `debian/` importado.
-[x] `dpkg-buildpackage -b -us -uc` terminó correctamente y generó el paquete binario.
-[x] El paquete `.deb` generado se instaló correctamente y la sesión `Fluxbox` apareció disponible en el login manager.
-[x] Se confirmó entrada correcta a una sesión real de Fluxbox desde el login manager de MX Linux 23.
+[x] `./configure` completed successfully.
+[x] The `uninstall` target exists (`make -n uninstall`).
+[x] `make -j4` completed successfully and generated the `./fluxbox` binary.
+[x] `dpkg-buildpackage -b -us -uc` starts correctly with the imported `debian/` directory.
+[x] `dpkg-buildpackage -b -us -uc` completed successfully and generated the binary package.
+[x] The generated `.deb` package installed correctly and the `Fluxbox` session appeared in the login manager.
+[x] Successfully entered a real Fluxbox session from the MX Linux 23 login manager.
 
-Notas observadas durante `./configure`:
+Notes observed during `./configure`:
 
-- El árbol llegó a compilar inicialmente sin `imlib2` ni `xpm` porque `configure` no encontró esas librerías opcionales.
-- Para el paquete Debian/MX, `debian/control` exige las dependencias de construcción completas.
-- En esta máquina ya están instaladas y verificadas; `dpkg-checkbuilddeps` no reporta faltantes.
+- The tree initially managed to build without `imlib2` or `xpm` because `configure` did not find those optional libraries.
+- For the Debian/MX package, `debian/control` requires the complete build dependency set.
+- On this machine they are now installed and verified; `dpkg-checkbuilddeps` reports no missing dependencies.
 
-Comando de instalación de build-deps usado/recomendado según `debian/control`:
+Build-dependency install command used/recommended according to `debian/control`:
 
 ```bash
 sudo apt install autoconf automake autotools-dev bzip2 debhelper \
@@ -97,138 +97,138 @@ sudo apt install autoconf automake autotools-dev bzip2 debhelper \
     libxrandr-dev libxt-dev
 ```
 
-## Mejoras técnicas futuras para Fluxbox en 2026
+## Future Technical Improvements For Fluxbox In 2026
 
-Estas no están hechas todavía. Son líneas de trabajo para una revisión más amplia del proyecto.
+These are not done yet. They are work tracks for a broader review of the project.
 
-[ ] Revisar compatibilidad moderna con Qt5/Qt6 y aplicaciones KDE actuales.
-[ ] Revisar foco, elevación y stacking de transients/modals en más rutas aparte de `Window.cc`.
-[ ] Añadir pruebas automáticas específicas para `WM_TRANSIENT_FOR`, modales y diálogos.
-[ ] Revisar comportamiento con portales (`xdg-desktop-portal`) y diálogos modernos.
-[ ] Revisar integración con `systemd --user`, `dbus-update-activation-environment` y sesiones X11 actuales.
-[ ] Revisar variables de entorno que pueden influir en Qt/KDE dentro de sesiones mínimas.
-[ ] Auditar dependencias y macros antiguas de `autoconf`/`automake` que ya muestran advertencias.
-[ ] Revisar `AC_LANG_CPLUSPLUS`, `AC_HEADER_STDC`, `AC_CHECK_LIBM`, `AC_TYPE_SIGNAL`, `AC_CONFIG_HEADER` y otras macros obsoletas.
-[ ] Evaluar modernización del sistema de build.
-[ ] Revisar soporte HiDPI, temas e iconos modernos.
-[ ] Revisar comportamiento con varios monitores y setups XRandR actuales.
-[ ] Revisar interacción con docks, systray, notificaciones y aplicaciones recientes.
-[ ] Revisar errores históricos en `ChangeLog` relacionados con transients para detectar patrones no resueltos.
-[ ] Revisar si existen bugs similares reportados recientemente aguas abajo en Debian, antiX o MX.
+[ ] Review modern compatibility with Qt5/Qt6 and current KDE applications.
+[ ] Review focus, raising, and stacking of transient/modal windows in paths beyond `Window.cc`.
+[ ] Add automated tests specific to `WM_TRANSIENT_FOR`, modals, and dialogs.
+[ ] Review behavior with portals (`xdg-desktop-portal`) and modern dialogs.
+[ ] Review integration with `systemd --user`, `dbus-update-activation-environment`, and current X11 sessions.
+[ ] Review environment variables that can affect Qt/KDE inside minimal sessions.
+[ ] Audit old `autoconf`/`automake` dependencies and macros that already produce warnings.
+[ ] Review `AC_LANG_CPLUSPLUS`, `AC_HEADER_STDC`, `AC_CHECK_LIBM`, `AC_TYPE_SIGNAL`, `AC_CONFIG_HEADER`, and other obsolete macros.
+[ ] Evaluate build system modernization.
+[ ] Review HiDPI support, themes, and modern icons.
+[ ] Review behavior with multiple monitors and current XRandR setups.
+[ ] Review interaction with docks, systray, notifications, and recent applications.
+[ ] Review historical issues in `ChangeLog` related to transients to detect unresolved patterns.
+[ ] Check whether similar bugs have been reported recently downstream in Debian, antiX, or MX.
 
-## Prioridad recomendada para modernizar Fluxbox
+## Recommended Priority For Modernizing Fluxbox
 
-Fluxbox es un proyecto viejo, así que no conviene intentar modernizar todo de golpe. La ruta más segura es trabajar por capas, empezando por las partes que más impacto tienen en aplicaciones modernas.
+Fluxbox is an old project, so it is not advisable to try to modernize everything at once. The safest path is to work in layers, starting with the areas that have the most impact on modern applications.
 
-### 1. Sistema de build
+### 1. Build System
 
-Primera zona razonable para modernizar:
+First reasonable area to modernize:
 
 - `configure.ac`
 - `Makefile.am`
-- macros en `m4/`
-- advertencias de `autoconf`/`automake`
+- macros in `m4/`
+- `autoconf`/`automake` warnings
 
-Tareas sugeridas:
+Suggested tasks:
 
-[ ] Reemplazar macros obsoletas de Autoconf/Automake.
-[ ] Revisar advertencias emitidas por `autogen.sh` y `configure`.
-[ ] Actualizar usos obsoletos como `AC_LANG_CPLUSPLUS`, `AC_HEADER_STDC`, `AC_TYPE_SIGNAL`, `AC_CONFIG_HEADER` y similares.
-[ ] Mantener la compatibilidad con el empaquetado Debian/MX mientras se moderniza el build.
+[ ] Replace obsolete Autoconf/Automake macros.
+[ ] Review warnings emitted by `autogen.sh` and `configure`.
+[ ] Update obsolete uses such as `AC_LANG_CPLUSPLUS`, `AC_HEADER_STDC`, `AC_TYPE_SIGNAL`, `AC_CONFIG_HEADER`, and similar macros.
+[ ] Preserve compatibility with Debian/MX packaging while modernizing the build.
 
-Esta capa no debería cambiar el comportamiento de Fluxbox; sirve para hacer el proyecto más mantenible.
+This layer should not change Fluxbox behavior; it is meant to make the project more maintainable.
 
-### 2. Foco, ventanas transitorias y compatibilidad moderna
+### 2. Focus, Transient Windows, And Modern Compatibility
 
-Zona más importante para el problema de diálogos:
+Most important area for the dialog issue:
 
 - `src/Window.cc`
 - `src/WinClient.cc`
 - `src/FocusControl.cc`
 - `src/Ewmh.cc`
 
-Tareas sugeridas:
+Suggested tasks:
 
-[ ] Revisar el manejo de `WM_TRANSIENT_FOR`.
-[ ] Revisar ventanas modales y transitorias de Qt5/Qt6/KDE.
-[ ] Revisar cuándo Fluxbox debe elevar una ventana antes de enfocarla.
-[ ] Revisar rutas relacionadas con `MapRequest`, `MapNotify` y peticiones de foco desde clientes.
-[ ] Mejorar compatibilidad con hints EWMH/ICCCM usados por aplicaciones actuales.
+[ ] Review `WM_TRANSIENT_FOR` handling.
+[ ] Review modal and transient windows from Qt5/Qt6/KDE.
+[ ] Review when Fluxbox should raise a window before focusing it.
+[ ] Review paths related to `MapRequest`, `MapNotify`, and focus requests from clients.
+[ ] Improve compatibility with EWMH/ICCCM hints used by current applications.
 
-Esta es la zona prioritaria si el problema de `File -> Open...` persiste.
+This is the priority area if the `File -> Open...` problem persists.
 
-### 3. Sesión e integración con escritorios actuales
+### 3. Session And Current Desktop Integration
 
-Archivos relevantes:
+Relevant files:
 
 - `util/startfluxbox.in`
 - `data/fluxbox.desktop.in`
 - `debian/fluxbox.desktop`
-- scripts de inicio de sesión
+- login/session startup scripts
 
-Tareas sugeridas:
+Suggested tasks:
 
-[ ] Revisar integración con DBus en sesiones mínimas.
-[ ] Revisar integración con `systemd --user` o `elogind`, según el init usado.
-[ ] Revisar uso de `dbus-update-activation-environment`.
-[ ] Revisar variables de entorno útiles para GTK/Qt/KDE: `DISPLAY`, `XAUTHORITY`, `DBUS_SESSION_BUS_ADDRESS`, `XDG_CURRENT_DESKTOP`, `XDG_SESSION_DESKTOP`.
-[ ] Revisar si el archivo `.desktop` del login manager debería distinguir esta compilación parcheada o mantener el nombre `Fluxbox`.
+[ ] Review DBus integration in minimal sessions.
+[ ] Review integration with `systemd --user` or `elogind`, depending on the init system in use.
+[ ] Review use of `dbus-update-activation-environment`.
+[ ] Review useful environment variables for GTK/Qt/KDE: `DISPLAY`, `XAUTHORITY`, `DBUS_SESSION_BUS_ADDRESS`, `XDG_CURRENT_DESKTOP`, `XDG_SESSION_DESKTOP`.
+[ ] Review whether the login manager `.desktop` file should distinguish this patched build or keep the name `Fluxbox`.
 
-Esta capa ayuda a que aplicaciones modernas funcionen mejor dentro de una sesión Fluxbox mínima.
+This layer helps modern applications work better inside a minimal Fluxbox session.
 
-### 4. Packaging Debian/MX
+### 4. Debian/MX Packaging
 
-Archivos relevantes:
+Relevant files:
 
 - `debian/control`
 - `debian/rules`
 - `debian/patches/`
 - `debian/fluxbox.desktop`
 
-Tareas sugeridas:
+Suggested tasks:
 
-[ ] Decidir si el cambio de `src/Window.cc` debe moverse a `debian/patches/`.
-[ ] Limpiar y mantener actualizadas las dependencias de construcción.
-[ ] Verificar que no se versionen artefactos generados por `dpkg-buildpackage`.
-[ ] Documentar claramente cómo construir, instalar, desinstalar y revertir el paquete.
+[ ] Decide whether the `src/Window.cc` change should be moved to `debian/patches/`.
+[ ] Clean up and keep build dependencies up to date.
+[ ] Verify that artifacts generated by `dpkg-buildpackage` are not versioned.
+[ ] Clearly document how to build, install, uninstall, and revert the package.
 
-Esta capa es importante porque ahora el repositorio ya incluye empaquetado Debian/MX.
+This layer is important because the repository now includes Debian/MX packaging.
 
-### 5. Modernización gradual del código C++
+### 5. Gradual C++ Code Modernization
 
-Esta parte debe hacerse con más cuidado que las anteriores.
+This part must be done more carefully than the previous ones.
 
-Tareas posibles:
+Possible tasks:
 
-[ ] Reemplazar punteros manuales por `std::unique_ptr` solo donde el ownership sea claro.
-[ ] Usar `nullptr` donde sea seguro.
-[ ] Añadir `override` en clases derivadas.
-[ ] Reducir casts peligrosos.
-[ ] Activar advertencias de compilador de forma progresiva.
-[ ] Evitar refactors masivos sin pruebas funcionales.
+[ ] Replace manual pointers with `std::unique_ptr` only where ownership is clear.
+[ ] Use `nullptr` where safe.
+[ ] Add `override` in derived classes.
+[ ] Reduce dangerous casts.
+[ ] Enable compiler warnings progressively.
+[ ] Avoid large refactors without functional tests.
 
-No conviene empezar por una modernización C++ general. Es mejor priorizar primero foco, EWMH, sesión y build system, porque ahí están los problemas reales con aplicaciones modernas.
+It is not advisable to start with a general C++ modernization. It is better to prioritize focus, EWMH, session, and build system work first, because those are the areas with real impact on modern applications.
 
-## Observaciones útiles para retomar luego
+## Useful Notes For Resuming Later
 
-[x] El árbol original upstream no traía `debian/`; ese directorio fue añadido después.
-[x] `README.md` ya documenta el parche aplicado y la lógica técnica detrás del cambio.
-[x] El problema del usuario original se reproduce como una falsa congelación: la aplicación queda esperando el diálogo modal, pero la ventana puede no quedar visible o enfocada.
-[ ] Confirmar con pruebas reales de `File -> Open...` si este parche basta o si hay más rutas de foco implicadas.
+[x] The original upstream tree did not include `debian/`; that directory was added later.
+[x] `README.md` already documents the applied patch and the technical logic behind the change.
+[x] The original user issue reproduces as a fake freeze: the application waits for the modal dialog, but the window may not be visible or focused.
+[ ] Confirm with real `File -> Open...` tests whether this patch is enough or whether more focus paths are involved.
 
-## Siguiente paso sugerido al abrir Codex directamente aquí
+## Suggested Next Step When Opening Codex Directly Here
 
-[ ] Abrir Codex en `/home/wachin/Dev/fluxbox-dev/fluxbox`.
-[x] Ejecutar `./configure`.
-[x] Compilar.
-[x] Probar entrada a sesión Fluxbox real con el paquete generado.
-[x] Instalar build-deps y empaquetar en `.deb`.
-[ ] Probar `File -> Open...` en aplicaciones Qt/KDE; si no funciona, seguir trazando `MapRequest`, `MapNotify`, `focusRequestFromClient()` y `FocusControl`.
+[ ] Open Codex in `/home/wachin/Dev/fluxbox-dev/fluxbox`.
+[x] Run `./configure`.
+[x] Build.
+[x] Test entry into a real Fluxbox session with the generated package.
+[x] Install build dependencies and package into a `.deb`.
+[ ] Test `File -> Open...` in Qt/KDE applications; if it does not work, continue tracing `MapRequest`, `MapNotify`, `focusRequestFromClient()`, and `FocusControl`.
 
-## Next safe step
+## Next Safe Step
 
-Siguiente paso seguro:
+Next safe step:
 
-  1. Probar `Kate`, `Kdenlive`, `Ksnip` y `Dolphin` con `File -> Open...` dentro de la sesión Fluxbox instalada desde el `.deb`.
-  2. Confirmar si los diálogos aparecen visibles y con foco inmediatamente.
-  3. Si hiciera falta revertir, reinstalar el paquete de Fluxbox de los repositorios de MX o reconstruir/reinstalar desde este árbol.
+  1. Test `Kate`, `Kdenlive`, `Ksnip`, and `Dolphin` with `File -> Open...` inside the Fluxbox session installed from the `.deb`.
+  2. Confirm whether dialogs appear visible and focused immediately.
+  3. If reverting is needed, reinstall the Fluxbox package from the MX repositories or rebuild/reinstall from this tree.
