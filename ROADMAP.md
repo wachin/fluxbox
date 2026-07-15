@@ -16,7 +16,7 @@ Este archivo resume lo que ya se hizo en este repositorio y lo que queda pendien
 [x] Se confirmó que `autogen.sh` funciona en este árbol y genera `configure` correctamente.
 [x] Se verificó con `./configure` que el árbol genera `Makefile` y que existe objetivo `uninstall`.
 [x] Se compiló el proyecto parcheado con `make -j4`.
-[ ] Probar el binario parcheado en una sesión real de Fluxbox.
+[x] Probar el binario parcheado en una sesión real de Fluxbox.
 [x] Construir un paquete `.deb` desde este repositorio con el `debian/` ya añadido.
 
 ## Parche aplicado
@@ -42,11 +42,11 @@ Objetivo del parche:
 [x] Confirmar que se generan `Makefile` y reglas de `install`/`uninstall`.
 [x] Ejecutar `make -j"$(nproc)"`.
 [x] Construir el paquete `.deb` con `dpkg-buildpackage -b -us -uc`.
-[ ] Instalar el `.deb` generado y probarlo en una sesión real de Fluxbox.
+[x] Instalar el `.deb` generado y probarlo en una sesión real de Fluxbox.
 
 ## Pruebas funcionales pendientes
 
-[ ] Iniciar sesión en Fluxbox con el binario parcheado.
+[x] Iniciar sesión en Fluxbox con el binario parcheado.
 [ ] Abrir `kate` y probar `File -> Open...`.
 [ ] Repetir con `kdenlive`.
 [ ] Repetir con `ksnip`.
@@ -70,7 +70,7 @@ Objetivo del parche:
 [x] Verificar con `dpkg-checkbuilddeps` que ya no faltan dependencias de construcción.
 [x] Generar `../fluxbox_1.3.7+git20220731-0mx23+1_amd64.deb`.
 [x] Generar `../fluxbox-dbgsym_1.3.7+git20220731-0mx23+1_amd64.deb`.
-[ ] Instalar el `.deb` generado y probarlo en una sesión real.
+[x] Instalar el `.deb` generado y probarlo en una sesión real.
 
 ## Resultado de verificación en esta máquina
 
@@ -79,6 +79,8 @@ Objetivo del parche:
 [x] `make -j4` terminó bien y generó el binario `./fluxbox`.
 [x] `dpkg-buildpackage -b -us -uc` arranca correctamente con el `debian/` importado.
 [x] `dpkg-buildpackage -b -us -uc` terminó correctamente y generó el paquete binario.
+[x] El paquete `.deb` generado se instaló correctamente y la sesión `Fluxbox` apareció disponible en el login manager.
+[x] Se confirmó entrada correcta a una sesión real de Fluxbox desde el login manager de MX Linux 23.
 
 Notas observadas durante `./configure`:
 
@@ -119,22 +121,21 @@ Estas no están hechas todavía. Son líneas de trabajo para una revisión más 
 [x] El árbol original upstream no traía `debian/`; ese directorio fue añadido después.
 [x] `README.md` ya documenta el parche aplicado y la lógica técnica detrás del cambio.
 [x] El problema del usuario original se reproduce como una falsa congelación: la aplicación queda esperando el diálogo modal, pero la ventana puede no quedar visible o enfocada.
-[ ] Confirmar con pruebas reales si este parche basta o si hay más rutas de foco implicadas.
+[ ] Confirmar con pruebas reales de `File -> Open...` si este parche basta o si hay más rutas de foco implicadas.
 
 ## Siguiente paso sugerido al abrir Codex directamente aquí
 
 [ ] Abrir Codex en `/home/wachin/Dev/fluxbox-dev/fluxbox`.
 [x] Ejecutar `./configure`.
 [x] Compilar.
-[ ] Probar el parche en sesión Fluxbox real.
+[x] Probar entrada a sesión Fluxbox real con el paquete generado.
 [x] Instalar build-deps y empaquetar en `.deb`.
-[ ] Si no funciona, seguir trazando `MapRequest`, `MapNotify`, `focusRequestFromClient()` y `FocusControl`.
+[ ] Probar `File -> Open...` en aplicaciones Qt/KDE; si no funciona, seguir trazando `MapRequest`, `MapNotify`, `focusRequestFromClient()` y `FocusControl`.
 
 ## Next safe step
 
 Siguiente paso seguro:
 
-  1. Instalar el paquete generado con `sudo dpkg -i ../fluxbox_1.3.7+git20220731-0mx23+1_amd64.deb`
-  2. Cerrar sesión y volver a entrar en Fluxbox.
-  3. Probar `Kate`, `Kdenlive`, `Ksnip` y `Dolphin` con `File -> Open...`.
-  4. Si hiciera falta revertir, reinstalar el paquete de Fluxbox de los repositorios de MX o reconstruir/reinstalar desde este árbol.
+  1. Probar `Kate`, `Kdenlive`, `Ksnip` y `Dolphin` con `File -> Open...` dentro de la sesión Fluxbox instalada desde el `.deb`.
+  2. Confirmar si los diálogos aparecen visibles y con foco inmediatamente.
+  3. Si hiciera falta revertir, reinstalar el paquete de Fluxbox de los repositorios de MX o reconstruir/reinstalar desde este árbol.
