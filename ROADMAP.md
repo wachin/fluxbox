@@ -116,6 +116,99 @@ Estas no están hechas todavía. Son líneas de trabajo para una revisión más 
 [ ] Revisar errores históricos en `ChangeLog` relacionados con transients para detectar patrones no resueltos.
 [ ] Revisar si existen bugs similares reportados recientemente aguas abajo en Debian, antiX o MX.
 
+## Prioridad recomendada para modernizar Fluxbox
+
+Fluxbox es un proyecto viejo, así que no conviene intentar modernizar todo de golpe. La ruta más segura es trabajar por capas, empezando por las partes que más impacto tienen en aplicaciones modernas.
+
+### 1. Sistema de build
+
+Primera zona razonable para modernizar:
+
+- `configure.ac`
+- `Makefile.am`
+- macros en `m4/`
+- advertencias de `autoconf`/`automake`
+
+Tareas sugeridas:
+
+[ ] Reemplazar macros obsoletas de Autoconf/Automake.
+[ ] Revisar advertencias emitidas por `autogen.sh` y `configure`.
+[ ] Actualizar usos obsoletos como `AC_LANG_CPLUSPLUS`, `AC_HEADER_STDC`, `AC_TYPE_SIGNAL`, `AC_CONFIG_HEADER` y similares.
+[ ] Mantener la compatibilidad con el empaquetado Debian/MX mientras se moderniza el build.
+
+Esta capa no debería cambiar el comportamiento de Fluxbox; sirve para hacer el proyecto más mantenible.
+
+### 2. Foco, ventanas transitorias y compatibilidad moderna
+
+Zona más importante para el problema de diálogos:
+
+- `src/Window.cc`
+- `src/WinClient.cc`
+- `src/FocusControl.cc`
+- `src/Ewmh.cc`
+
+Tareas sugeridas:
+
+[ ] Revisar el manejo de `WM_TRANSIENT_FOR`.
+[ ] Revisar ventanas modales y transitorias de Qt5/Qt6/KDE.
+[ ] Revisar cuándo Fluxbox debe elevar una ventana antes de enfocarla.
+[ ] Revisar rutas relacionadas con `MapRequest`, `MapNotify` y peticiones de foco desde clientes.
+[ ] Mejorar compatibilidad con hints EWMH/ICCCM usados por aplicaciones actuales.
+
+Esta es la zona prioritaria si el problema de `File -> Open...` persiste.
+
+### 3. Sesión e integración con escritorios actuales
+
+Archivos relevantes:
+
+- `util/startfluxbox.in`
+- `data/fluxbox.desktop.in`
+- `debian/fluxbox.desktop`
+- scripts de inicio de sesión
+
+Tareas sugeridas:
+
+[ ] Revisar integración con DBus en sesiones mínimas.
+[ ] Revisar integración con `systemd --user` o `elogind`, según el init usado.
+[ ] Revisar uso de `dbus-update-activation-environment`.
+[ ] Revisar variables de entorno útiles para GTK/Qt/KDE: `DISPLAY`, `XAUTHORITY`, `DBUS_SESSION_BUS_ADDRESS`, `XDG_CURRENT_DESKTOP`, `XDG_SESSION_DESKTOP`.
+[ ] Revisar si el archivo `.desktop` del login manager debería distinguir esta compilación parcheada o mantener el nombre `Fluxbox`.
+
+Esta capa ayuda a que aplicaciones modernas funcionen mejor dentro de una sesión Fluxbox mínima.
+
+### 4. Packaging Debian/MX
+
+Archivos relevantes:
+
+- `debian/control`
+- `debian/rules`
+- `debian/patches/`
+- `debian/fluxbox.desktop`
+
+Tareas sugeridas:
+
+[ ] Decidir si el cambio de `src/Window.cc` debe moverse a `debian/patches/`.
+[ ] Limpiar y mantener actualizadas las dependencias de construcción.
+[ ] Verificar que no se versionen artefactos generados por `dpkg-buildpackage`.
+[ ] Documentar claramente cómo construir, instalar, desinstalar y revertir el paquete.
+
+Esta capa es importante porque ahora el repositorio ya incluye empaquetado Debian/MX.
+
+### 5. Modernización gradual del código C++
+
+Esta parte debe hacerse con más cuidado que las anteriores.
+
+Tareas posibles:
+
+[ ] Reemplazar punteros manuales por `std::unique_ptr` solo donde el ownership sea claro.
+[ ] Usar `nullptr` donde sea seguro.
+[ ] Añadir `override` en clases derivadas.
+[ ] Reducir casts peligrosos.
+[ ] Activar advertencias de compilador de forma progresiva.
+[ ] Evitar refactors masivos sin pruebas funcionales.
+
+No conviene empezar por una modernización C++ general. Es mejor priorizar primero foco, EWMH, sesión y build system, porque ahí están los problemas reales con aplicaciones modernas.
+
 ## Observaciones útiles para retomar luego
 
 [x] El árbol original upstream no traía `debian/`; ese directorio fue añadido después.
