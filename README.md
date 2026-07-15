@@ -167,6 +167,8 @@ If you want to test quickly without building a Debian package first:
 
 ```bash
 cd /home/wachin/Dev/fluxbox-dev/fluxbox
+./configure --prefix=/usr/local
+make -j"$(nproc)"
 sudo make install
 ```
 
@@ -175,8 +177,26 @@ Important:
 - this usually installs under `/usr/local`,
 - it is useful for testing,
 - but it is not as clean as installing a proper `.deb`.
+- `make uninstall` only removes files from the same `prefix` used when `./configure` generated the current `Makefile`.
 
 After installing, log out and start a Fluxbox session again before testing `Kate`, `Kdenlive`, `Ksnip`, or `Dolphin`.
+
+To uninstall this local test build later, use the same configured tree:
+
+```bash
+cd /home/wachin/Dev/fluxbox-dev/fluxbox
+sudo make uninstall
+```
+
+If `make uninstall` does not remove files from `/usr/local`, reconfigure the tree with the same prefix used for the local install and run uninstall again:
+
+```bash
+cd /home/wachin/Dev/fluxbox-dev/fluxbox
+./configure --prefix=/usr/local
+sudo make uninstall
+```
+
+For example, a tree configured with `--prefix=/usr` will try to uninstall from `/usr`, not from `/usr/local`.
 
 ## Power menu on MX Linux with SysVinit
 
