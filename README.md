@@ -178,6 +178,39 @@ Important:
 
 After installing, log out and start a Fluxbox session again before testing `Kate`, `Kdenlive`, `Ksnip`, or `Dolphin`.
 
+## Power menu on MX Linux with SysVinit
+
+On MX Linux, the Fluxbox session may be running on SysVinit instead of systemd. Check it with:
+
+```bash
+ps -p 1 -o comm=
+```
+
+If the output is `init`, Fluxbox menu entries that call `systemctl poweroff`, `systemctl reboot`, or `systemctl suspend` will not work because systemd is not PID 1.
+
+Use `pkexec` with the classic power commands in `~/.fluxbox/menu`:
+
+```fluxbox
+[submenu] (Salir) </usr/share/icons/gnome/16x16/actions/stop.png>
+   [exec] (Reiniciar) {pkexec /sbin/reboot} </usr/share/icons/gnome/16x16/actions/reload.png>
+   [exec] (Apagar) {pkexec /sbin/poweroff} </usr/share/icons/gnome/16x16/actions/system-shutdown.png>
+   [exec] (Suspender) {pkexec /usr/sbin/pm-suspend} </usr/share/icons/gnome/16x16/actions/player_pause.png>
+   [exit] (Cerrar Sesión) </usr/share/icons/gnome/16x16/actions/system-log-out.png>
+[end]
+```
+
+The graphical password prompt requires a Polkit authentication agent. A Fluxbox startup file can launch the GNOME Polkit agent like this:
+
+```sh
+/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &
+```
+
+After editing the menu, reload Fluxbox:
+
+```bash
+fluxbox-remote reconfig
+```
+
 ## About creating a `.deb`
 
 This repository **now does contain** a `debian/` directory.
