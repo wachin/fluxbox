@@ -156,7 +156,7 @@ From this directory:
 ```bash
 cd /home/wachin/Dev/fluxbox-dev/fluxbox
 ./autogen.sh
-make -j"$(nproc)"
+make -j"$(nproc)".fl
 ```
 
 If compilation succeeds, the patched binary should be in the build tree.

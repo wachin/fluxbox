@@ -1,0 +1,26 @@
+fluxbox (1.3.7+git20220731-0mx23+1) mx; urgency=medium
+
+  * Rebuild for MX-23
+
+ -- Timothy E. Harris <maintainer@mxrepo.com>  Thu, 27 Apr 2023 21:11:36 -0400
+
+fluxbox (1.3.7-1~antix1) unstable; urgency=medium
+
+  * antiX build 
+
+ -- anticapitalista <antix@operamail.com>  Wed, 15 Jan 2020 01:04:07 +0200
+
+fluxbox (1.3.7-1~exp1) experimental; urgency=medium
+
+  * New upstream release
+
+ -- Paul Tagliamonte <paultag@debian.org>  Wed, 18 Feb 2015 14:29:38 -0500
+
+fluxbox (1.3.6-1~exp1) experimental; urgency=medium
+
+  * New upstream release
+
+ -- Paul Tagliamonte <paultag@debian.org>  Tue, 06 Jan 2015 14:02:15 -0500
+
+# Older entries have been removed from this changelog.
+# To read the complete changelog use `apt changelog fluxbox`.

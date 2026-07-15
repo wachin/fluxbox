@@ -1,0 +1,3 @@
+shlibs:Depends=libc6 (>= 2.34), libfontconfig1 (>= 2.12.6), libfribidi0 (>= 0.19.2), libgcc-s1 (>= 3.0), libimlib2 (>= 1.4.5), libstdc++6 (>= 11), libx11-6, libxext6, libxft2 (>> 2.1.1), libxinerama1 (>= 2:1.1.4), libxpm4, libxrandr2, libxrender1
+misc:Depends=
+misc:Pre-Depends=
