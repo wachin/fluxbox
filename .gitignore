@@ -62,3 +62,24 @@ libtool
 *.Plo
 *.Tpo
 compile_commands.json
+*~
+
+# Debian package build artifacts
+/debian/.debhelper/
+/debian/fluxbox/
+/debian/tmp/
+/debian/files
+/debian/debhelper-build-stamp
+/debian/autoreconf.before
+/debian/autoreconf.after
+/debian/*.debhelper.log
+/debian/*.substvars
+/debian/*.postinst.debhelper
+/debian/*.postrm.debhelper
+/debian/additional-themes/stage/
+/debian/additional-themes/stage-images/
+
+# Binary package outputs, if generated inside this tree
+/*.deb
+/*.buildinfo
+/*.changes
